@@ -13,6 +13,36 @@
 namespace ofx { namespace gpc {
     typedef gpc_op op;
     
+    inline gpc_polygon ofToGpc(ofPolyline pl){
+        gpc_polygon a;
+        a.num_contours = 1;
+        a.hole = NULL;
+        a.contour = NULL;
+        
+        MALLOC(a.hole, a.num_contours * sizeof(int), "contour hole", int);
+        MALLOC(a.contour, a.num_contours * sizeof(gpc_vertex_list), "contour", gpc_vertex_list);
+        
+        vector<ofPoint> verts = pl.getVertices();
+        int num = verts.size();
+        
+        gpc_vertex_list g_verts;
+        g_verts.num_vertices = num;
+        MALLOC(g_verts.vertex, num * sizeof(gpc_vertex), "vertex", gpc_vertex);
+        
+        for ( int j=0; j<num; j++ ) {
+            gpc_vertex g_vec;
+            g_vec.x = verts[j].x;
+            g_vec.y = verts[j].y;
+            
+            g_verts.vertex[j] = g_vec;
+        }
+        
+        a.hole[0] = FALSE;
+        a.contour[0] = g_verts;
+        
+        return a;
+    }
+    
     inline gpc_polygon ofToGpc(ofPath p){
         vector<ofPolyline> lines = p.getOutline();
         gpc_polygon a;
@@ -61,7 +91,18 @@ namespace ofx { namespace gpc {
         return res;
     }
     
-    inline vector<ofPolyline> getPlygonClip(op operation, ofPath sub, ofPath clip){
+    inline vector<ofPolyline> getPolygonClip(op operation, ofPolyline sub, ofPolyline clip){
+        gpc_polygon a = ofToGpc(sub);
+        gpc_polygon b = ofToGpc(clip);
+        
+        gpc_polygon res;
+        
+        gpc_polygon_clip(operation, &a, &b, &res);
+        
+        return gpcToOf(res);
+    }
+    
+    inline vector<ofPolyline> getPolygonClip(op operation, ofPath sub, ofPath clip){
         gpc_polygon a = ofToGpc(sub);
         gpc_polygon b = ofToGpc(clip);
         

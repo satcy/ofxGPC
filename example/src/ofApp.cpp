@@ -19,7 +19,7 @@ void ofApp::setup(){
     path2.lineTo(150, 500);
     path2.close();
     
-    lines = ofxGPC::getPlygonClip(GPC_UNION, path, path2);
+    lines = ofxGPC::getPolygonClip(GPC_UNION, path, path2);
 }
 
 //--------------------------------------------------------------
