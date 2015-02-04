@@ -17,7 +17,7 @@ public:
         ofBackground(0);
         
         path.moveTo(0,0);
-        path.lineTo(120, 200);
+        path.lineTo(120, 150);
         path.lineTo(180, 100);
         path.lineTo(300, 300);
         path.lineTo(300, 400);
@@ -32,8 +32,8 @@ public:
         path2.setFilled(false);
         path2.setStrokeWidth(1);
         
-        unioned = ofxGPC::getPolygonClip(GPC_UNION, path, path2);
-        diffed = ofxGPC::getPolygonClip(GPC_DIFF, path, path2);
+        unioned = ofxGPC::getPolygonClip(ofxGPC::UNION, path, path2);
+        diffed = ofxGPC::getPolygonClip(ofxGPC::DIFF, path, path2);
         
     }
     void update(){

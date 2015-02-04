@@ -11,9 +11,15 @@
 #include "gpc.c"
 
 namespace ofx { namespace gpc {
-    typedef gpc_op op;
+    enum opType{
+        DIFF = GPC_DIFF,
+        INT = GPC_INT,
+        XOR = GPC_XOR,
+        UNION = GPC_UNION,
+    };
     
-    inline gpc_polygon ofToGpc(ofPolyline pl){
+    
+    inline gpc_polygon ofToGpc(ofPolyline & pl){
         gpc_polygon a;
         a.num_contours = 1;
         a.hole = NULL;
@@ -43,7 +49,7 @@ namespace ofx { namespace gpc {
         return a;
     }
     
-    inline gpc_polygon ofToGpc(ofPath p){
+    inline gpc_polygon ofToGpc(ofPath & p){
         vector<ofPolyline> lines = p.getOutline();
         gpc_polygon a;
         a.num_contours = lines.size();
@@ -54,7 +60,10 @@ namespace ofx { namespace gpc {
         MALLOC(a.contour, a.num_contours * sizeof(gpc_vertex_list), "contour", gpc_vertex_list);
         
         for ( int i=0; i<lines.size(); i++ ) {
-            ofPolyline pl = lines[i];
+            ofPolyline & pl = lines[i];
+            if ( !pl.isClosed() ) {
+                pl.close();
+            }
             vector<ofPoint> verts = pl.getVertices();
             int num = verts.size();
             
@@ -91,24 +100,24 @@ namespace ofx { namespace gpc {
         return res;
     }
     
-    inline vector<ofPolyline> getPolygonClip(op operation, ofPolyline sub, ofPolyline clip){
+    inline vector<ofPolyline> getPolygonClip(opType operation, ofPolyline sub, ofPolyline clip){
         gpc_polygon a = ofToGpc(sub);
         gpc_polygon b = ofToGpc(clip);
         
         gpc_polygon res;
         
-        gpc_polygon_clip(operation, &a, &b, &res);
+        gpc_polygon_clip((gpc_op)operation, &a, &b, &res);
         
         return gpcToOf(res);
     }
     
-    inline vector<ofPolyline> getPolygonClip(op operation, ofPath sub, ofPath clip){
+    inline vector<ofPolyline> getPolygonClip(opType operation, ofPath sub, ofPath clip){
         gpc_polygon a = ofToGpc(sub);
         gpc_polygon b = ofToGpc(clip);
         
         gpc_polygon res;
         
-        gpc_polygon_clip(operation, &a, &b, &res);
+        gpc_polygon_clip((gpc_op)operation, &a, &b, &res);
         
         return gpcToOf(res);
     }
