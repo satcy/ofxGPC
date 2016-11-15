@@ -8,9 +8,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "gpc.c"
+#include "gpc.h"
 
-namespace ofx { namespace gpc {
+#ifndef MALLOC
+#define MALLOC(p, b, s, t) {if ((b) > 0) { \
+p= (t*)malloc(b); if (!(p)) { \
+fprintf(stderr, "gpc malloc failure: %s\n", s); \
+exit(0);}} else p= NULL;}
+#endif
+
+class ofxGPC {
+public:
     enum opType{
         DIFF = GPC_DIFF,
         INT = GPC_INT,
@@ -19,7 +27,7 @@ namespace ofx { namespace gpc {
     };
     
     
-    inline gpc_polygon ofToGpc(ofPolyline & pl){
+    static gpc_polygon ofToGpc(ofPolyline & pl){
         gpc_polygon a;
         a.num_contours = 1;
         a.hole = NULL;
@@ -49,7 +57,7 @@ namespace ofx { namespace gpc {
         return a;
     }
     
-    inline gpc_polygon ofToGpc(ofPath & p){
+    static gpc_polygon ofToGpc(ofPath & p){
         vector<ofPolyline> lines = p.getOutline();
         gpc_polygon a;
         a.num_contours = lines.size();
@@ -87,7 +95,7 @@ namespace ofx { namespace gpc {
         return a;
     }
     
-    inline vector<ofPolyline> gpcToOf(gpc_polygon p){
+    static vector<ofPolyline> gpcToOf(gpc_polygon p){
         vector<ofPolyline> res;
         for ( int i=0; i<p.num_contours; i++ ) {
             ofPolyline pl;
@@ -100,29 +108,43 @@ namespace ofx { namespace gpc {
         return res;
     }
     
-    inline vector<ofPolyline> getPolygonClip(opType operation, ofPolyline sub, ofPolyline clip){
+    static vector<ofPolyline> getPolygonClip(opType operation, ofPolyline sub, ofPolyline clip){
         gpc_polygon a = ofToGpc(sub);
         gpc_polygon b = ofToGpc(clip);
-        
-        gpc_polygon res;
-        
-        gpc_polygon_clip((gpc_op)operation, &a, &b, &res);
-        
-        return gpcToOf(res);
-    }
-    
-    inline vector<ofPolyline> getPolygonClip(opType operation, ofPath sub, ofPath clip){
-        gpc_polygon a = ofToGpc(sub);
-        gpc_polygon b = ofToGpc(clip);
-        
-        gpc_polygon res;
-        
-        gpc_polygon_clip((gpc_op)operation, &a, &b, &res);
-        
-        return gpcToOf(res);
-    }
-    
-    
-}}
 
-namespace ofxGPC = ofx::gpc;
+        gpc_polygon res;
+
+        gpc_polygon_clip((gpc_op)operation, &a, &b, &res);
+
+        vector<ofPolyline> r = gpcToOf(res);
+        return r;
+    }
+    
+    static vector<ofPolyline> getPolygonClip(opType operation, ofPath sub, ofPath clip){
+        gpc_polygon a = ofToGpc(sub);
+        gpc_polygon b = ofToGpc(clip);
+        
+        gpc_polygon res;
+        
+        gpc_polygon_clip(gpc_op(operation), &a, &b, &res);
+        
+        vector<ofPolyline> r = gpcToOf(res);
+        return r;
+    }
+    
+    static ofPath getPathFromPolylines(vector<ofPolyline> & polys){
+        ofPath path;
+        for ( int j = 0; j<polys.size(); j++ ) {
+            ofPolyline & poly = polys[j];
+            path.newSubPath();
+            vector<ofPoint> verts = poly.getVertices();
+            int num = verts.size();
+            for ( int i=0; i<num; i++ ) {
+                if ( i == 0 ) path.moveTo(verts[i]);
+                else path.lineTo(verts[i]);
+            }
+            path.close();
+        }
+        return path;
+    }
+};

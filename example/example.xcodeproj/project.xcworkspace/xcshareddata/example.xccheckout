@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C469F3C1-377A-4DD1-8F88-8A6DE4D6A4CB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>example</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>CDAB391B37486E7F4EEEBADAED7E551B268B38CE</key>
+		<string>https://github.com/satcy/ofxGPC.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>example/example.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>CDAB391B37486E7F4EEEBADAED7E551B268B38CE</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/satcy/ofxGPC.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CDAB391B37486E7F4EEEBADAED7E551B268B38CE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CDAB391B37486E7F4EEEBADAED7E551B268B38CE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxGPC</string>
+		</dict>
+	</array>
+</dict>
+</plist>
